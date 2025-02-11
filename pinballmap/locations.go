@@ -3,7 +3,6 @@ package pinballmap
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 )
 
 // GetLocations fetches pinball locations based on a city.
