@@ -1,3 +1,3 @@
-module github.com/bob-bot/pinball-go
+module github.com/bob-bot/pinballmap-go
 
 go 1.22.5
