@@ -5,13 +5,6 @@ import (
 	"fmt"
 )
 
-// Region represents a pinball region.
-type Region struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Slug string `json:"slug"`
-}
-
 // GetRegions fetches all available pinball regions.
 func (c *Client) GetRegions() ([]Region, error) {
 	endpoint := "regions.json"

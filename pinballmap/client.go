@@ -18,11 +18,6 @@ type Client struct {
 }
 
 // NewClient initializes a new API client.
-func NewClient(apiKey string) *Client {
-	return &Client{APIKey: apiKey}
-}
-
-// get performs a generic GET request to the Pinball Map API.
 func (c *Client) get(endpoint string, params map[string]string) ([]byte, error) {
 	u, err := url.Parse(fmt.Sprintf("%s/%s", baseURL, endpoint))
 	if err != nil {
@@ -54,5 +49,11 @@ func (c *Client) get(endpoint string, params map[string]string) ([]byte, error) 
 		return nil, fmt.Errorf("API request failed with status %d", resp.StatusCode)
 	}
 
-	return json.NewDecoder(resp.Body).Decode()
+	// Decode the response body
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	return data, nil
 }

@@ -1,4 +1,3 @@
-// Package pinballmap provides models for interacting with the Pinball Map API.
 package pinballmap
 
 // Location represents a pinball location.
@@ -17,7 +16,7 @@ type Machine struct {
 	Name string `json:"name"`
 }
 
-// Region represents a pinball region.
+// Region represents a pinball region. (This stays here!)
 type Region struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`

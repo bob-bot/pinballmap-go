@@ -8,23 +8,19 @@ import (
 
 // GetLocations fetches pinball locations based on a city.
 func (c *Client) GetLocations(city string) ([]Location, error) {
-	url := fmt.Sprintf("%s/locations.json?by_city=%s", c.BaseURL, city)
+	endpoint := "locations.json"
+	params := map[string]string{"by_city": city}
 
-	resp, err := http.Get(url)
+	data, err := c.get(endpoint, params)
 	if err != nil {
 		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to fetch locations, status code: %d", resp.StatusCode)
 	}
 
 	var result struct {
 		Locations []Location `json:"locations"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
+	if err := json.Unmarshal(data, &result); err != nil {
+		return nil, fmt.Errorf("failed to parse locations response: %w", err)
 	}
 
 	return result.Locations, nil
