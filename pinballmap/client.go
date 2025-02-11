@@ -1,0 +1,58 @@
+// Package pinballmap provides an SDK for interacting with the Pinball Map API.
+package pinballmap
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/url"
+)
+
+const (
+	baseURL = "https://pinballmap.com/api/v1"
+)
+
+// Client represents a Pinball Map API client.
+type Client struct {
+	APIKey string
+}
+
+// NewClient initializes a new API client.
+func NewClient(apiKey string) *Client {
+	return &Client{APIKey: apiKey}
+}
+
+// get performs a generic GET request to the Pinball Map API.
+func (c *Client) get(endpoint string, params map[string]string) ([]byte, error) {
+	u, err := url.Parse(fmt.Sprintf("%s/%s", baseURL, endpoint))
+	if err != nil {
+		return nil, err
+	}
+
+	q := u.Query()
+	for key, value := range params {
+		q.Set(key, value)
+	}
+	u.RawQuery = q.Encode()
+
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if c.APIKey != "" {
+		req.Header.Set("Authorization", "Bearer "+c.APIKey)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API request failed with status %d", resp.StatusCode)
+	}
+
+	return json.NewDecoder(resp.Body).Decode()
+}
